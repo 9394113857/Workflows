@@ -1,135 +1,342 @@
 
-name:  🚀 Angular-Ecommerce 👉🏻 Auth-Service, Product-Service, Cart-Service and ML-Events-Service, ML-Recommendations-Service, Assistant-Service ||| Hit Daily Warm Up All Backends
+name: 🚀 Angular-Ecommerce 👉🏻 Auth-Service, Product-Service, Cart-Service, ML-Events-Service, ML-Recommendations-Service and Assistant-Service ||| Hit Daily Warm Up All Backends
+
+# ============================================================
+# WORKFLOW TRIGGERS
+# ============================================================
 
 on:
+
+  # ----------------------------------------------------------
+  # AUTOMATIC DAILY SCHEDULE
+  # ----------------------------------------------------------
+  # Runs every day at 00:30 UTC.
+  # This corresponds to 06:00 AM Indian Standard Time (IST).
+  # All six Render backend services will receive wake-up requests.
+  # ----------------------------------------------------------
+
   schedule:
-    # Daily at 6:00 AM IST (00:30 UTC)
     - cron: "30 0 * * *"
+
+  # ----------------------------------------------------------
+  # MANUAL WORKFLOW EXECUTION
+  # ----------------------------------------------------------
+  # Allows you to manually trigger the workflow whenever needed
+  # directly from GitHub Actions using the Run workflow button.
+  # ----------------------------------------------------------
 
   workflow_dispatch:
 
+
+# ============================================================
+# JOBS CONFIGURATION
+# ============================================================
+
 jobs:
+
+  # ----------------------------------------------------------
+  # BACKEND WARM-UP JOB
+  # ----------------------------------------------------------
+
   warmup:
-    name: Warm Up All Render Backend Services
+
+    name: Warm Up All 6 Render Backend Services
+
+    # GitHub-hosted Ubuntu runner.
     runs-on: ubuntu-latest
 
     steps:
-      - name: Wake All Services
+
+      # ======================================================
+      # STEP 1: WAKE UP ALL BACKEND SERVICES
+      # ======================================================
+
+      - name: Wake All 6 Backend Services
+
         shell: bash
+
         run: |
+
           echo "================================================"
-          echo "RENDER BACKEND WAKE-UP SEQUENCE"
+          echo "ANGULAR E-COMMERCE BACKEND WAKE-UP SEQUENCE"
           echo "================================================"
 
           echo "SYSTEM STATUS: COLD / STARTING UP"
           echo "SCHEDULE: Daily at 6:00 AM IST"
+          echo "TOTAL BACKEND SERVICES: 6"
           echo ""
 
-          # ----------------------------------------------
-          # START ALL SERVICES SIMULTANEOUSLY
-          # ----------------------------------------------
+          # --------------------------------------------------
+          # STEP 1A: START ALL SIX SERVICES SIMULTANEOUSLY
+          # --------------------------------------------------
+          # Each curl request runs in the background using &.
+          # This allows all six Render services to start waking
+          # up at the same time instead of waiting sequentially.
+          #
+          # --fail          : Treat HTTP errors as failures.
+          # --silent        : Suppress unnecessary progress.
+          # --show-error    : Display errors when they occur.
+          # --location      : Follow HTTP redirects.
+          # --max-time 900  : Allow up to 900 seconds per request.
+          # > /dev/null     : Discard response body.
+          # 2>&1            : Suppress redirected error output.
+          # &               : Execute request in background.
+          # --------------------------------------------------
 
-          echo "Starting all backend services..."
+          echo "Starting all backend services simultaneously..."
+          echo ""
+
+          # 1. AUTH SERVICE
+          echo "[1/6] Starting Auth-Service..."
 
           curl --fail --silent --show-error --location --max-time 900 \
             https://backend-auth-service-ks6f.onrender.com \
             > /dev/null 2>&1 &
+
           PID1=$!
+
+
+          # 2. PRODUCT SERVICE
+          echo "[2/6] Starting Product-Service..."
 
           curl --fail --silent --show-error --location --max-time 900 \
             https://backend-product-service-ncl2.onrender.com \
             > /dev/null 2>&1 &
+
           PID2=$!
+
+
+          # 3. CART / ORDER SERVICE
+          echo "[3/6] Starting Cart / Order-Service..."
 
           curl --fail --silent --show-error --location --max-time 900 \
             https://backend-cart-order-service-q6qh.onrender.com \
             > /dev/null 2>&1 &
+
           PID3=$!
+
+
+          # 4. ML EVENTS SERVICE
+          echo "[4/6] Starting ML-Events-Service..."
 
           curl --fail --silent --show-error --location --max-time 900 \
             https://backend-ml-events-service-ba9v.onrender.com \
             > /dev/null 2>&1 &
+
           PID4=$!
+
+
+          # 5. ML RECOMMENDATION SERVICE
+          echo "[5/6] Starting ML-Recommendations-Service..."
 
           curl --fail --silent --show-error --location --max-time 900 \
             https://backend-ml-recommendation-service-huu6.onrender.com \
             > /dev/null 2>&1 &
+
           PID5=$!
 
-          # ----------------------------------------------
-          # WAIT FOR ALL SERVICES
-          # ----------------------------------------------
+
+          # 6. ASSISTANT SERVICE
+          # Newly added Render backend service.
+          # Endpoint returns:
+          # {
+          #   "status": "Assistant service running successfully."
+          # }
+          # --------------------------------------------------
+
+          echo "[6/6] Starting Assistant-Service..."
+
+          curl --fail --silent --show-error --location --max-time 900 \
+            https://assistant-service-g24j.onrender.com/ \
+            > /dev/null 2>&1 &
+
+          PID6=$!
+
+
+          # ==================================================
+          # STEP 2: WAIT FOR ALL SIX BACKEND RESPONSES
+          # ==================================================
+          # All requests have already been started in parallel.
+          # We now wait for each background process to finish.
+          #
+          # A successful curl request increments SUCCESS.
+          # A failed curl request increments FAILED.
+          # ==================================================
 
           echo ""
-          echo "SERVICES ARE WAKING UP..."
-          echo "Waiting for all backend responses..."
+          echo "================================================"
+          echo "WAITING FOR ALL BACKEND SERVICES"
+          echo "================================================"
+
+          echo "All six services have received wake-up requests."
+          echo "Waiting for backend HTTP responses..."
           echo ""
 
           SUCCESS=0
           FAILED=0
 
+
+          # --------------------------------------------------
+          # 2A. AUTH SERVICE RESULT
+          # --------------------------------------------------
+
           if wait "$PID1"; then
+
             echo "AUTH SERVICE: UP"
             SUCCESS=$((SUCCESS + 1))
+
           else
+
             echo "AUTH SERVICE: FAILED"
             FAILED=$((FAILED + 1))
+
           fi
+
+
+          # --------------------------------------------------
+          # 2B. PRODUCT SERVICE RESULT
+          # --------------------------------------------------
 
           if wait "$PID2"; then
+
             echo "PRODUCT SERVICE: UP"
             SUCCESS=$((SUCCESS + 1))
+
           else
+
             echo "PRODUCT SERVICE: FAILED"
             FAILED=$((FAILED + 1))
+
           fi
+
+
+          # --------------------------------------------------
+          # 2C. CART / ORDER SERVICE RESULT
+          # --------------------------------------------------
 
           if wait "$PID3"; then
+
             echo "CART / ORDER SERVICE: UP"
             SUCCESS=$((SUCCESS + 1))
+
           else
+
             echo "CART / ORDER SERVICE: FAILED"
             FAILED=$((FAILED + 1))
+
           fi
+
+
+          # --------------------------------------------------
+          # 2D. ML EVENTS SERVICE RESULT
+          # --------------------------------------------------
 
           if wait "$PID4"; then
+
             echo "ML EVENTS SERVICE: UP"
             SUCCESS=$((SUCCESS + 1))
+
           else
+
             echo "ML EVENTS SERVICE: FAILED"
             FAILED=$((FAILED + 1))
+
           fi
+
+
+          # --------------------------------------------------
+          # 2E. ML RECOMMENDATION SERVICE RESULT
+          # --------------------------------------------------
 
           if wait "$PID5"; then
+
             echo "ML RECOMMENDATION SERVICE: UP"
             SUCCESS=$((SUCCESS + 1))
+
           else
+
             echo "ML RECOMMENDATION SERVICE: FAILED"
             FAILED=$((FAILED + 1))
+
           fi
 
-          # ----------------------------------------------
-          # FINAL SYSTEM STATUS
-          # ----------------------------------------------
+
+          # --------------------------------------------------
+          # 2F. ASSISTANT SERVICE RESULT
+          # --------------------------------------------------
+
+          if wait "$PID6"; then
+
+            echo "ASSISTANT SERVICE: UP"
+            SUCCESS=$((SUCCESS + 1))
+
+          else
+
+            echo "ASSISTANT SERVICE: FAILED"
+            FAILED=$((FAILED + 1))
+
+          fi
+
+
+          # ==================================================
+          # STEP 3: FINAL SYSTEM STATUS REPORT
+          # ==================================================
 
           echo ""
           echo "================================================"
-          echo "FINAL BACKEND STATUS"
+          echo "FINAL BACKEND SYSTEM STATUS"
           echo "================================================"
 
-          echo "SERVICES UP: $SUCCESS / 5"
-          echo "SERVICES FAILED: $FAILED / 5"
+          echo ""
+          echo "TOTAL SERVICES: 6"
+          echo "SERVICES UP: $SUCCESS / 6"
+          echo "SERVICES FAILED: $FAILED / 6"
+
+          echo ""
+
+          # --------------------------------------------------
+          # STEP 3A: ALL SERVICES SUCCESSFUL
+          # --------------------------------------------------
 
           if [ "$FAILED" -eq 0 ]; then
-            echo ""
+
             echo "SYSTEM STATUS: ONLINE"
-            echo "ALL BACKEND SERVICES ARE UP AND RUNNING"
-            echo "READY TO ACCEPT TRAFFIC"
-          else
             echo ""
+            echo "ALL SIX BACKEND SERVICES ARE UP AND RUNNING."
+            echo "AUTH SERVICE: ONLINE"
+            echo "PRODUCT SERVICE: ONLINE"
+            echo "CART / ORDER SERVICE: ONLINE"
+            echo "ML EVENTS SERVICE: ONLINE"
+            echo "ML RECOMMENDATION SERVICE: ONLINE"
+            echo "ASSISTANT SERVICE: ONLINE"
+            echo ""
+            echo "ANGULAR E-COMMERCE BACKEND ECOSYSTEM"
+            echo "READY TO ACCEPT TRAFFIC."
+
+          # --------------------------------------------------
+          # STEP 3B: ONE OR MORE SERVICES FAILED
+          # --------------------------------------------------
+
+          else
+
             echo "SYSTEM STATUS: PARTIALLY ONLINE"
-            echo "SOME BACKEND SERVICES FAILED"
+            echo ""
+            echo "SOME BACKEND SERVICES FAILED TO RESPOND."
+            echo "PLEASE CHECK THE GITHUB ACTIONS EXECUTION LOGS."
+            echo ""
+            echo "SUCCESSFUL SERVICES: $SUCCESS"
+            echo "FAILED SERVICES: $FAILED"
+
+            # Mark GitHub Actions workflow as FAILED.
             exit 1
+
           fi
 
+          # --------------------------------------------------
+          # STEP 3C: END OF WAKE-UP SEQUENCE
+          # --------------------------------------------------
+
+          echo ""
+          echo "================================================"
+          echo "BACKEND WARM-UP SEQUENCE COMPLETED"
           echo "================================================"
