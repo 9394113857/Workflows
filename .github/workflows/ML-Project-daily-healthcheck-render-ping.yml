@@ -9,7 +9,7 @@
 #       https://healthcheck-udoy.onrender.com/
 #
 # Schedule:
-#       Daily at 6:00 AM IST
+#       Daily at 4:00 AM IST
 #
 # Features:
 #       ✅ Daily scheduled trigger
@@ -37,11 +37,11 @@ name: 🚀 ML-Project Trigger 👉🏻 Daily Render Health Check Ping
 
 on:
 
-  # Run every day at 06:00 AM India Standard Time.
+  # Run every day at 04:00 AM India Standard Time.
   # timezone makes the intended local time explicit.
   # GitHub may still delay scheduled starts during high load.
   schedule:
-    - cron: "0 6 * * *"
+    - cron: "0 4 * * *"
       timezone: "Asia/Kolkata"
 
   # Manual trigger
@@ -99,7 +99,7 @@ jobs:
           # --------------------------------------------------
           echo "Trigger: ${{ github.event_name }}"
           echo "Scheduled Cron: ${{ github.event.schedule }}"
-          echo "Expected Schedule: Daily at 06:00 Asia/Kolkata"
+          echo "Expected Schedule: Daily at 04:00 Asia/Kolkata"
           echo "Actual Start (UTC): $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
           echo "Actual Start (IST): $(TZ=Asia/Kolkata date '+%Y-%m-%d %I:%M:%S %p IST')"
           echo "Branch: ${{ github.ref }}"
@@ -236,7 +236,7 @@ jobs:
           echo "https://healthcheck-udoy.onrender.com/"
 
           echo ""
-          echo "Expected Schedule: Daily at 06:00 Asia/Kolkata"
+          echo "Expected Schedule: Daily at 04:00 Asia/Kolkata"
           echo "Trigger: ${{ github.event_name }}"
           echo "Scheduled Cron: ${{ github.event.schedule }}"
           echo "Actual Finish (UTC): $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
