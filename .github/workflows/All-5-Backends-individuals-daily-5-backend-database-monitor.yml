@@ -2,7 +2,7 @@
 # 🚀 DAILY RUNTIME MONITOR - 5 BACKENDS + 5 DATABASE/DATA LAYERS
 #
 # Schedule:
-#       Every day at 06:00 AM India Standard Time (Asia/Kolkata)
+#       Every day at 04:00 AM India Standard Time (Asia/Kolkata)
 #
 # Triggers:
 #       ✅ Daily timezone-aware scheduled trigger
@@ -50,7 +50,7 @@ on:
   # ----------------------------------------------------------
   # AUTOMATIC DAILY SCHEDULE
   # ----------------------------------------------------------
-  # Run every day at 06:00 in India Standard Time.
+  # Run every day at 04:00 in India Standard Time.
   #
   # Cron fields:
   #   minute       = 0
@@ -63,7 +63,7 @@ on:
   # GitHub can still queue/delay scheduled workflows under load.
   # ----------------------------------------------------------
   schedule:
-    - cron: "0 6 * * *"
+    - cron: "0 4 * * *"
       timezone: "Asia/Kolkata"
 
   # ----------------------------------------------------------
@@ -135,7 +135,7 @@ jobs:
           echo "Actual Start Time (UTC): $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
           echo "Actual Start Time (IST): $(TZ=Asia/Kolkata date '+%Y-%m-%d %I:%M:%S %p IST')"
 
-          echo "Expected Schedule: Daily at 06:00 AM Asia/Kolkata"
+          echo "Expected Schedule: Daily at 04:00 AM Asia/Kolkata"
           echo "Servers: 5"
           echo "Databases/Data Endpoints: 5"
           echo "Total Components: 10"
@@ -155,7 +155,7 @@ jobs:
             echo "|---|---|"
             echo "| Trigger | ${{ github.event_name }} |"
             echo "| Scheduled cron | ${{ github.event.schedule }} |"
-            echo "| Expected schedule | Daily at 06:00 Asia/Kolkata |"
+            echo "| Expected schedule | Daily at 04:00 Asia/Kolkata |"
             echo "| Actual start (UTC) | $(date -u '+%Y-%m-%d %H:%M:%S UTC') |"
             echo "| Actual start (IST) | $(TZ=Asia/Kolkata date '+%Y-%m-%d %I:%M:%S %p IST') |"
             echo "| Branch / ref | ${{ github.ref }} |"
@@ -711,7 +711,7 @@ jobs:
             echo ""
             echo "### ⏱️ Scheduling Note"
             echo ""
-            echo "- Intended schedule: daily at 06:00 Asia/Kolkata."
+            echo "- Intended schedule: daily at 04:00 Asia/Kolkata."
             echo "- Actual start time is recorded above."
             echo "- GitHub may delay scheduled workflow starts under high load."
           } >> "$GITHUB_STEP_SUMMARY"
@@ -745,7 +745,7 @@ jobs:
           echo "🚀 DAILY RUNTIME MONITOR CLOSED"
           echo "================================================"
 
-          echo "Expected Schedule: Daily at 06:00 AM Asia/Kolkata"
+          echo "Expected Schedule: Daily at 04:00 AM Asia/Kolkata"
           echo "Actual Finish Time (UTC): $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
           echo "Actual Finish Time (IST): $(TZ=Asia/Kolkata date '+%Y-%m-%d %I:%M:%S %p IST')"
           echo "Trigger: ${{ github.event_name }}"
