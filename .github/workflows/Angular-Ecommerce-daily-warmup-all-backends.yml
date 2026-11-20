@@ -10,14 +10,14 @@ on:
   # ----------------------------------------------------------
   # AUTOMATIC DAILY SCHEDULE
   # ----------------------------------------------------------
-  # Runs every day at 06:00 AM India Standard Time.
+  # Runs every day at 04:00 AM India Standard Time.
   # The timezone field makes the local time explicit; no manual
   # UTC conversion is needed. GitHub may still queue scheduled
   # workflows during periods of high Actions load.
   # ----------------------------------------------------------
 
   schedule:
-    - cron: "0 6 * * *"
+    - cron: "0 4 * * *"
       timezone: "Asia/Kolkata"
 
   # ----------------------------------------------------------
@@ -74,7 +74,7 @@ jobs:
           # --------------------------------------------------
           echo "TRIGGER: ${{ github.event_name }}"
           echo "SCHEDULED CRON: ${{ github.event.schedule }}"
-          echo "EXPECTED SCHEDULE: Daily at 06:00 Asia/Kolkata"
+          echo "EXPECTED SCHEDULE: Daily at 04:00 Asia/Kolkata"
           echo "ACTUAL START (UTC): $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
           echo "ACTUAL START (IST): $(TZ=Asia/Kolkata date '+%Y-%m-%d %I:%M:%S %p IST')"
           echo "BRANCH: ${{ github.ref }}"
