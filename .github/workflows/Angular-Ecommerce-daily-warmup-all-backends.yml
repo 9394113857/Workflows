@@ -10,13 +10,15 @@ on:
   # ----------------------------------------------------------
   # AUTOMATIC DAILY SCHEDULE
   # ----------------------------------------------------------
-  # Runs every day at 00:30 UTC.
-  # This corresponds to 06:00 AM Indian Standard Time (IST).
-  # All six Render backend services will receive wake-up requests.
+  # Runs every day at 06:00 AM India Standard Time.
+  # The timezone field makes the local time explicit; no manual
+  # UTC conversion is needed. GitHub may still queue scheduled
+  # workflows during periods of high Actions load.
   # ----------------------------------------------------------
 
   schedule:
-    - cron: "30 0 * * *"
+    - cron: "0 6 * * *"
+      timezone: "Asia/Kolkata"
 
   # ----------------------------------------------------------
   # MANUAL WORKFLOW EXECUTION
@@ -62,7 +64,22 @@ jobs:
           echo "================================================"
 
           echo "SYSTEM STATUS: COLD / STARTING UP"
-          echo "SCHEDULE: Daily at 6:00 AM IST"
+          # --------------------------------------------------
+          # EXECUTION DIAGNOSTICS
+          # --------------------------------------------------
+          # event_name distinguishes automatic schedule runs
+          # from manual workflow_dispatch runs. event.schedule
+          # contains the cron expression for scheduled runs.
+          # These timestamps record when the runner actually starts.
+          # --------------------------------------------------
+          echo "TRIGGER: ${{ github.event_name }}"
+          echo "SCHEDULED CRON: ${{ github.event.schedule }}"
+          echo "EXPECTED SCHEDULE: Daily at 06:00 Asia/Kolkata"
+          echo "ACTUAL START (UTC): $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "ACTUAL START (IST): $(TZ=Asia/Kolkata date '+%Y-%m-%d %I:%M:%S %p IST')"
+          echo "BRANCH: ${{ github.ref }}"
+          echo "COMMIT: ${{ github.sha }}"
+          echo "RUN ID: ${{ github.run_id }}"
           echo "TOTAL BACKEND SERVICES: 6"
           echo ""
 
