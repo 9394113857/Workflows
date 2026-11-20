@@ -37,10 +37,12 @@ name: 🚀 ML-Project Trigger 👉🏻 Daily Render Health Check Ping
 
 on:
 
-  # 6:00 AM IST = 00:30 UTC
-
+  # Run every day at 06:00 AM India Standard Time.
+  # timezone makes the intended local time explicit.
+  # GitHub may still delay scheduled starts during high load.
   schedule:
-    - cron: "30 0 * * *"
+    - cron: "0 6 * * *"
+      timezone: "Asia/Kolkata"
 
   # Manual trigger
 
@@ -88,7 +90,21 @@ jobs:
           WEBSITE_URL="https://healthcheck-udoy.onrender.com/"
 
           echo "Website URL: $WEBSITE_URL"
-          echo "Schedule: Daily at 6:00 AM IST"
+          # --------------------------------------------------
+          # EXECUTION DIAGNOSTICS
+          # --------------------------------------------------
+          # event_name distinguishes schedule from manual runs.
+          # event.schedule provides the cron for schedule events.
+          # Timestamps show the actual runner start time.
+          # --------------------------------------------------
+          echo "Trigger: ${{ github.event_name }}"
+          echo "Scheduled Cron: ${{ github.event.schedule }}"
+          echo "Expected Schedule: Daily at 06:00 Asia/Kolkata"
+          echo "Actual Start (UTC): $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "Actual Start (IST): $(TZ=Asia/Kolkata date '+%Y-%m-%d %I:%M:%S %p IST')"
+          echo "Branch: ${{ github.ref }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Run ID: ${{ github.run_id }}"
           echo "Request Method: GET"
           echo ""
 
@@ -220,10 +236,13 @@ jobs:
           echo "https://healthcheck-udoy.onrender.com/"
 
           echo ""
-          echo "Schedule: Daily at 6:00 AM IST"
-
+          echo "Expected Schedule: Daily at 06:00 Asia/Kolkata"
           echo "Trigger: ${{ github.event_name }}"
-
+          echo "Scheduled Cron: ${{ github.event.schedule }}"
+          echo "Actual Finish (UTC): $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "Actual Finish (IST): $(TZ=Asia/Kolkata date '+%Y-%m-%d %I:%M:%S %p IST')"
+          echo "Branch: ${{ github.ref }}"
+          echo "Commit: ${{ github.sha }}"
           echo "Workflow Run: ${{ github.run_number }}"
 
           echo ""
